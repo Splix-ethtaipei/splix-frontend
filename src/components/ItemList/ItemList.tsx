@@ -20,7 +20,7 @@ const mockItems: ItemType[] = [
   {
     groupid: 1001,
     chainid: 1,
-    name: "Blue Potion",
+    name: "Queenie's Foodie Group",
     itemcount: 5,
     owner: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
     account: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -28,7 +28,7 @@ const mockItems: ItemType[] = [
   {
     groupid: 1002,
     chainid: 1,
-    name: "Steel Sword",
+    name: "Chee's Birthday Party",
     itemcount: 1,
     owner: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
     account: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -36,7 +36,7 @@ const mockItems: ItemType[] = [
   {
     groupid: 1003,
     chainid: 137,
-    name: "Magic Shield",
+    name: "EthTaipei Gang",
     itemcount: 2,
     owner: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
     account: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
@@ -44,7 +44,7 @@ const mockItems: ItemType[] = [
   {
     groupid: 1004,
     chainid: 137,
-    name: "Health Crystal",
+    name: "Karaoke Degens",
     itemcount: 10,
     owner: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
     account: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
