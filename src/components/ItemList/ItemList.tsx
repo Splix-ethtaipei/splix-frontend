@@ -22,8 +22,18 @@ const ItemList: React.FC<ItemListProps> = ({ account, apiEndpoint, ItemComponent
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const mockData: ItemType[] = [
+      { groupid: 1, chainid: 1, name: 'Mock Item 1', itemcount: 1, owner: 'mock', account: account },
+      { groupid: 2, chainid: 1, name: 'Mock Item 2', itemcount: 2, owner: 'mock', account: account },
+    ];
+
     const fetchItems = async () => {
       try {
+        if (!apiEndpoint) {
+          setItems(mockData);
+          return;
+        }
+
         const response = await fetch(`${apiEndpoint}/${account}`);
         if (!response.ok) {
           throw new Error('Failed to fetch items');
