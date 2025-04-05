@@ -225,7 +225,14 @@ const PayPage = () => {
   return (
     <div className="result-content">
       <div className="header">
-        <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
+        <img 
+            src="/splix-logo.jpg" 
+            alt="SpliX" 
+            className="splix-logo"
+            onError={(e) => {
+              e.currentTarget.src = '../src/assets/splix-logo.svg';
+            }}
+          />
       </div>
       <h1>Finalize Your Payment</h1>
       
