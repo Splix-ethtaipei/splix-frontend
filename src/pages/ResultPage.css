@@ -43,17 +43,59 @@
   }
   
   .members-list {
-    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
   }
   
   .member-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px;
-    background-color: #f8f8f8;
-    margin-bottom: 5px;
-    border-radius: 4px;
+    padding: 12px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+  }
+  
+  .member-item:hover {
+    transform: translateX(4px);
+  }
+  
+  .member-profile {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    cursor: pointer;
+  }
+  
+  .member-identity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+  }
+  
+  .member-avatar {
+    font-size: 32px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .member-name {
+    font-weight: 500;
+    color: #000;
+  }
+  
+  .member-address {
+    font-family: monospace;
+    color: #666;
+    font-size: 0.9em;
   }
   
   .remove-button {
@@ -63,6 +105,16 @@
     cursor: pointer;
     font-size: 18px;
     padding: 0 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  .member-item:hover .remove-button {
+    opacity: 1;
+  }
+  
+  .remove-button:hover {
+    color: #ff0000;
   }
   
   .items-list {
@@ -71,9 +123,9 @@
   
   .item-entry {
     margin-bottom: 10px;
-    padding: 12px;
+    padding: 8px;
     background-color: #f8f8f8;
-    border-radius: 4px;
+    border-radius: 8px;
     transition: background-color 0.2s;
   }
   
@@ -86,21 +138,37 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    padding: 8px;
   }
   
-  .item-edit {
+  .item-info {
     display: flex;
-    gap: 10px;
     align-items: center;
+    gap: 12px;
+  }
+  
+  .item-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+  
+  .item-checkbox:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
   }
   
   .edit-button {
     background-color: #2196F3;
     color: white;
     border: none;
-    padding: 4px 8px;
+    padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
+  }
+  
+  .edit-button:hover {
+    background-color: #1976D2;
   }
   
   .save-button {
@@ -115,10 +183,6 @@
   .edit-button:hover,
   .save-button:hover {
     opacity: 0.9;
-  }
-  
-  .remove-button:hover {
-    color: #ff0000;
   }
 
   .generate-qr-button {
@@ -243,9 +307,49 @@
     background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s;
+    margin-left: 20px;
+  }
+
+  .submit-changes-button:hover:not(:disabled) {
+    background-color: #45a049;
+  }
+
+  .submit-changes-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+
+  .total-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 8px;
+  }
+
+  .total-amount {
+    font-size: 1.2em;
+    color: #333;
+  }
+
+  .total-amount strong {
+    color: #000;
+  }
+
+  .changes-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
   }
 
   .cancel-changes-button {
@@ -257,13 +361,19 @@
     cursor: pointer;
   }
 
-  .submit-changes-button:hover,
-  .cancel-changes-button:hover {
-    opacity: 0.9;
-  }
-
   .submit-changes-button:disabled,
   .cancel-changes-button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
+  }
+
+  .paid-item {
+    text-decoration: line-through;
+    color: #888;
+  }
+
+  .payer-info {
+    color: #4CAF50;
+    font-style: italic;
+    margin-left: 8px;
   }

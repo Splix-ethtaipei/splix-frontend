@@ -17,38 +17,50 @@ interface ResultData {
     haspaid: boolean;
     payer: string;
   }[];
-  members: string[];
+  members: { name: string; address: string }[];
 }
 
 // Add mock data
 const mockResultData: ResultData = {
   id: 1,
-  name: "abc",
+  name: "Queenie's Foodie Group",
   owner: "bcd",
   items: [
     {
       id: 1,
-      name: "food a",
-      price: 1234,
+      name: "Chicken Caesar Salad",
+      price: 1699, // $16.99
       haspaid: true,
-      payer: "0xabc"
+      payer: "Jeff"
     },
     {
       id: 2,
-      name: "food b",
-      price: 1234,
+      name: "Classic Cheeseburger & Fries",
+      price: 1899, // $18.99
       haspaid: false,
-      payer: "0xabc"
+      payer: ""
     },
     {
       id: 3,
-      name: "food d",
-      price: 1234,
+      name: "Margherita Pizza",
+      price: 1999, // $19.99
       haspaid: false,
-      payer: "0xabc"
+      payer: ""
+    },
+    {
+      id: 4,
+      name: "Fish & Chips",
+      price: 2199, // $21.99
+      haspaid: false,
+      payer: ""
     }
   ],
-  members: ["0xfA6cF974baf5F5589afF6364180D54fd0b2428F2"]
+  members: [
+    { name: "Chee", address: "0xfA6cF974baf5F5589afF6364180D54fd0b2428F2" },
+    { name: "Lucy", address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e" },
+    { name: "Jeff", address: "0x123f681646d4a755815f9cb19e1acc8565a0c2ac" },
+    { name: "Daisy", address: "0x9e8f732b20c4a12187895b11c992ec86e1b5be8d" }
+  ]
 };
 
 export default function ResultPage() {
@@ -136,7 +148,7 @@ export default function ResultPage() {
       }
 
       const trimmedMember = newMember.trim();
-      if (!resultData.members.includes(trimmedMember)) {
+      if (!resultData.members.some(m => m.address === trimmedMember)) {
         // // Actual API call would go here
         // await updateMembers([...resultData.members, trimmedMember]);
 
@@ -144,7 +156,7 @@ export default function ResultPage() {
           if (!prev) return null;
           return {
             ...prev,
-            members: [...prev.members, trimmedMember]
+            members: [...prev.members, { name: trimmedMember, address: trimmedMember }]
           };
         });
       }
@@ -155,7 +167,7 @@ export default function ResultPage() {
   const handleRemoveMember = (memberToRemove: string) => {
     if (!resultData) return;
 
-    const updatedMembers = resultData.members.filter(member => member !== memberToRemove);
+    const updatedMembers = resultData.members.filter(member => member.address !== memberToRemove);
     setResultData(prev => {
       if (!prev) return null;
       return {
@@ -208,7 +220,14 @@ export default function ResultPage() {
     return (
       <div className="pages">
         <div className="header">
-          <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
+          <img 
+            src="/splix-logo.jpg" 
+            alt="SpliX" 
+            className="splix-logo"
+            onError={(e) => {
+              e.currentTarget.src = '../src/assets/splix-logo.svg';
+            }}
+          />
         </div>
         <div className="result-content">
           <h1>Loading...</h1>
@@ -221,7 +240,14 @@ export default function ResultPage() {
     return (
       <div className="pages">
         <div className="header">
-          <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
+          <img 
+            src="/splix-logo.jpg" 
+            alt="SpliX" 
+            className="splix-logo"
+            onError={(e) => {
+              e.currentTarget.src = '../src/assets/splix-logo.svg';
+            }}
+          />
         </div>
         <div className="result-content">
           <h1>{error || 'Item Not Found'}</h1>
@@ -239,7 +265,14 @@ export default function ResultPage() {
   return (
     <div className="pages">
       <div className="header">
-        <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
+        <img 
+          src="/splix-logo.jpg" 
+          alt="SpliX" 
+          className="splix-logo"
+          onError={(e) => {
+            e.currentTarget.src = '../src/assets/splix-logo.svg';
+          }}
+        />
         <button
           className="nav-button"
           onClick={() => navigate('/')}
@@ -249,8 +282,6 @@ export default function ResultPage() {
       </div>
 
       <div className="result-content">
-        <h1>Item Details</h1>
-
         <div className="result-details">
           <div className="ownership-status">
             {/* <span className="owner-badge">You are the owner</span> */}
@@ -281,19 +312,30 @@ export default function ResultPage() {
             )}
             {resultData.members.length > 0 ? (
               <ul className="members-list">
-                {resultData.members.map((member, index) => (
-                  <li key={index} className="member-item">
-                    {member}
-                    {isOwner && (
-                      <button
-                        onClick={() => handleRemoveMember(member)}
-                        className="remove-button"
-                      >
-                        ×
-                      </button>
-                    )}
-                  </li>
-                ))}
+                {resultData.members.map((member, index) => {
+                  const emojis = ["👨🏻", "👩🏻", "👨🏼", "👩🏼", "👨🏽", "👩🏽", "👨🏾", "👩🏾", "👨🏿", "👩🏿"];
+                  const emoji = emojis[index % emojis.length];
+                  
+                  return (
+                    <li key={index} className="member-item">
+                      <div className="member-profile">
+                        <div className="member-identity">
+                          <span className="member-avatar">{emoji}</span>
+                          <span className="member-name">{member.name}</span>
+                        </div>
+                        <span className="member-address">{member.address}</span>
+                      </div>
+                      {isOwner && (
+                        <button
+                          onClick={() => handleRemoveMember(member.address)}
+                          className="remove-button"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p>No members added</p>
@@ -324,6 +366,8 @@ export default function ResultPage() {
                           type="checkbox"
                           checked={item.haspaid}
                           onChange={(e) => handleEditItem(index, 'haspaid', e.target.checked)}
+                          className="item-checkbox"
+                          disabled={false}
                         />
                         Paid
                       </label>
@@ -339,10 +383,23 @@ export default function ResultPage() {
                     </div>
                   ) : (
                     <div className="item-display">
-                      <span>
-                        <strong>{item.name}</strong> - ${item.price}
-                        {item.haspaid && ` (Paid by ${item.payer})`}
-                      </span>
+                      <div className="item-info">
+                        <input
+                          type="checkbox"
+                          checked={item.haspaid}
+                          onChange={(e) => handleEditItem(index, 'haspaid', e.target.checked)}
+                          className="item-checkbox"
+                          disabled={resultData?.items[index].haspaid}
+                        />
+                        <span className={resultData?.items[index].haspaid ? 'paid-item' : ''}>
+                          <strong>{item.name}</strong> - ${(item.price / 100).toFixed(2)}
+                          {resultData?.items[index].haspaid && (
+                            <span className="payer-info">
+                              {' '}(Paid by {item.payer})
+                            </span>
+                          )}
+                        </span>
+                      </div>
                       {isOwner && (
                         <button
                           onClick={() => setEditingItem(index)}

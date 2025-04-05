@@ -193,58 +193,57 @@ export default function CreatePage() {
     const base64Data = await base64Promise;
 
     try {
-      // Create form data for file upload
-      // const formData = new FormData();
-      // formData.append('image', file);
-
-      // Make API call to scan endpoint
-      const url = `${baseUrl}/scan-receipt`;
-      console.log(url);
+      let scanResult: ScanResult;
       
-      // Comment out actual API call
-      // const response = await fetch(url, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify({ image: base64Data }),
-      // });
-
-      // if (!response.ok) {
-      //   throw new Error('Failed to scan item');
-      // }
-
-      // Mock response
-      const scanResult: ScanResult = {
-        restaurant_name: "Sample Restaurant",
-        location: "123 Main St",
-        phone_number: "555-0123",
-        date: "2024-03-20",
-        time: "19:30",
-        items: [
-          {
-            name: "Burger",
-            quantity: 1,
-            price: 15.99,
-            currency: "USD",
-            price_usd: 15.99
+      if (baseUrl) {
+        // Make API call to scan endpoint
+        const url = `${baseUrl}/scan-receipt`;
+        console.log(url);
+        
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
           },
-          {
-            name: "Fries",
-            quantity: 1,
-            price: 4.99,
-            currency: "USD",
-            price_usd: 4.99
-          }
-        ],
-        tax: 2.10,
-        total: 23.08,
-        currency: "USD",
-        total_usd: 23.08,
-        currency_usd: "USD"
-      };
+          body: JSON.stringify({ image: base64Data }),
+        });
 
-      // const scanResult: ScanResult = await response.json();
+        if (!response.ok) {
+          throw new Error('Failed to scan item');
+        }
+        
+        scanResult = await response.json();
+      } else {
+        // Use mock response when baseUrl is empty
+        scanResult = {
+          restaurant_name: "Sample Restaurant",
+          location: "123 Main St",
+          phone_number: "555-0123",
+          date: "2024-03-20",
+          time: "19:30",
+          items: [
+            {
+              name: "Burger",
+              quantity: 1,
+              price: 15.99,
+              currency: "USD",
+              price_usd: 15.99
+            },
+            {
+              name: "Fries",
+              quantity: 1,
+              price: 4.99,
+              currency: "USD",
+              price_usd: 4.99
+            }
+          ],
+          tax: 2.10,
+          total: 23.08,
+          currency: "USD",
+          total_usd: 23.08,
+          currency_usd: "USD"
+        };
+      }
 
       // Convert the response to our item format
       // const newItem = {
@@ -277,7 +276,7 @@ export default function CreatePage() {
   return (
     <div className="pages">
       <div className="header">
-        <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
+        <img src="/splix-logo.jpg" alt="SpliX" className="splix-logo" />
         <button
           className="nav-button"
           onClick={() => navigate('/')}
@@ -383,6 +382,7 @@ export default function CreatePage() {
                           }));
                         }}
                         placeholder="Item name"
+                        style={{ color: 'black' }}
                       />
                     </div>
                     <div className="input-group">
