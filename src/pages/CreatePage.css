@@ -7,85 +7,143 @@
 .create-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
 }
 
 .form-section {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+}
+
+/* Input Styling */
+input {
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: white;
+    color: #333333;
+}
+
+input:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+/* Common button styles */
+.nav-button,
+.add-button,
+.submit-button,
+.scan-button,
+.remove-item,
+.remove-member {
+    background-color: #f0f0f0;
+    color: #333333;
+    padding: 12px 24px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-button:hover,
+.add-button:hover,
+.submit-button:hover,
+.scan-button:hover,
+.remove-item:hover,
+.remove-member:hover {
+    background-color: #e0e0e0;
+    border-color: #d0d0d0;
+}
+
+.nav-button:active,
+.add-button:active,
+.submit-button:active,
+.scan-button:active,
+.remove-item:active,
+.remove-member:active {
+    transform: scale(0.98);
+    background-color: #d8d8d8;
+}
+
+/* Disabled state */
+.submit-button:disabled {
+    background-color: #f5f5f5;
+    color: #aaaaaa;
+    border-color: #e5e5e5;
+    cursor: not-allowed;
+}
+
+/* Items List Styling */
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 16px;
 }
 
 .item-inputs {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 12px;
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    flex-direction: column;
+    gap: 16px;
 }
 
-input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.add-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    align-self: flex-start;
-}
-
-.submit-button {
-    background-color: #2196F3;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    align-self: center;
-    margin-top: 20px;
-}
-
-.add-button:hover,
-.submit-button:hover {
-    opacity: 0.9;
-}
-
-.members-list {
+.item-header {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    margin-top: 10px;
 }
 
+.input-group label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Member tag styling update to match */
 .member-tag {
+    background-color: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    color: #333333;
+    padding: 8px 12px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
-    background-color: #e0e0e0;
-    padding: 4px 8px;
-    border-radius: 4px;
+    gap: 8px;
     font-size: 14px;
 }
 
-.remove-member {
+.member-tag button {
     background: none;
     border: none;
-    color: #666;
-    margin-left: 8px;
+    color: #666666;
     cursor: pointer;
     padding: 0 4px;
     font-size: 16px;
 }
 
-.remove-member:hover {
-    color: #ff0000;
+.member-tag button:hover {
+    color: #ff4444;
 }
 
+/* Scan section styling */
 .scan-section {
-    margin-bottom: 20px;
+    margin: 16px 0;
 }
 
 .file-input {
@@ -94,18 +152,9 @@ input {
 
 .scan-button {
     display: inline-block;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: opacity 0.2s;
+    text-align: center;
 }
 
-.scan-button:hover {
-    opacity: 0.9;
-}
-
-.scan-button:active {
-    transform: scale(0.98);
+.input-group input {
+    color: #333333;
 }

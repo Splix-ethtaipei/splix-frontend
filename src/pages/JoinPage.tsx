@@ -109,7 +109,14 @@ export default function JoinPage() {
     return (
       <div className="join-page">
         <div className="header">
-          <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
+          <img 
+            src="/splix-logo.jpg" 
+            alt="SpliX" 
+            className="splix-logo"
+            onError={(e) => {
+              e.currentTarget.src = '../src/assets/splix-logo.svg';
+            }}
+          />
         </div>
         <div className="join-content">
           <h1>Validating group...</h1>
@@ -122,7 +129,14 @@ export default function JoinPage() {
     return (
       <div className="join-page">
         <div className="header">
-          <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
+          <img 
+            src="/splix-logo.jpg" 
+            alt="SpliX" 
+            className="splix-logo"
+            onError={(e) => {
+              e.currentTarget.src = '../src/assets/splix-logo.svg';
+            }}
+          />
         </div>
         <div className="join-content">
           <h1>Error</h1>
@@ -141,7 +155,14 @@ export default function JoinPage() {
   return (
     <div className="join-page">
       <div className="header">
-        <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
+        <img 
+          src="/splix-logo.jpg" 
+          alt="SpliX" 
+          className="splix-logo"
+          onError={(e) => {
+            e.currentTarget.src = '../src/assets/splix-logo.svg';
+          }}
+        />
       </div>
       <div className="join-content">
         <h1>Do you want to join "{groupData.name}"?</h1>
