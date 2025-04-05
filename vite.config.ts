@@ -7,9 +7,4 @@ export default defineConfig({
   define: {
     'process.env': {},
   },
-  server: {
-    headers: {
-      'Content-Type': 'application/javascript'
-    }
-  }
 })
