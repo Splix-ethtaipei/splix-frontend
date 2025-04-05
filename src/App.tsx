@@ -123,7 +123,7 @@ function AppContent() {
               )}
               {activeTab === 'tab2' && (
                 <div className="list-container">
-                  <h2>Group Invitations</h2>
+                  <h2 className="column-title">Group Invitations</h2>
                   <ItemList account={address} apiEndpoint={`${baseUrl}/groups/request`} ItemComponent={ItemRequest} />
                 </div>
               )}
