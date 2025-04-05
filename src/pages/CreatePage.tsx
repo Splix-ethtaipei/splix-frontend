@@ -17,6 +17,28 @@ interface FormData {
   items: Item[];
 }
 
+interface ScanResultItem {
+  name: string;
+  quantity: number;
+  price: number;
+  currency: string;
+  price_usd: number;
+}
+
+interface ScanResult {
+  restaurant_name: string | null;
+  location: string | null;
+  phone_number: string | null;
+  date: string;
+  time: string;
+  items: ScanResultItem[];
+  tax: number | null;
+  total: number;
+  currency: string;
+  total_usd: number;
+  currency_usd: string;
+}
+
 export default function CreatePage() {
   const navigate = useNavigate();
   const { isConnected } = useAppKitAccount();
@@ -27,7 +49,7 @@ export default function CreatePage() {
     items: []
   });
   const [isScanning, setIsScanning] = useState(false);
-
+  const baseUrl = import.meta.env.VITE_API_ENDPOINT;
   // Redirect to home if not connected
   React.useEffect(() => {
     if (!isConnected) {
@@ -37,7 +59,7 @@ export default function CreatePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       // // Make API call to create endpoint
       // const response = await fetch('/api/create', {
@@ -97,29 +119,60 @@ export default function CreatePage() {
     const file = e.target.files[0];
     setIsScanning(true);
 
+    // Convert file to base64
+    const reader = new FileReader();
+    const base64Promise = new Promise<string>((resolve, reject) => {
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        resolve(base64String.split(',')[1]); // Remove data URL prefix
+      };
+      reader.onerror = reject;
+    });
+
+    reader.readAsDataURL(file);
+    const base64Data = await base64Promise;
+
     try {
-      // Mock API response with new format
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-      const mockResponse = {
-        item: "FoodA",
-        quantity: 1,
-        priceInNativeCurrency: 5.00,
-        nativeCurrency: "USD",
-        priceInUsd: 5.00
-      };
-      
+      // Create form data for file upload
+      // const formData = new FormData();
+      // formData.append('image', file);
+
+      // Make API call to scan endpoint
+      const url = `${baseUrl}/scan-receipt`;
+      console.log(url);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ image: base64Data }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to scan item');
+      }
+
+      const scanResult: ScanResult = await response.json();
+
       // Convert the response to our item format
-      const newItem = {
-        name: mockResponse.item,
-        quantity: mockResponse.quantity,
-        priceInNativeCurrency: mockResponse.priceInNativeCurrency,
-        nativeCurrency: mockResponse.nativeCurrency,
-        priceInUsd: mockResponse.priceInUsd
-      };
+      // const newItem = {
+      //   name: scanResult.item,
+      //   quantity: scanResult.quantity,
+      //   priceInNativeCurrency: scanResult.priceInNativeCurrency,
+      //   nativeCurrency: scanResult.nativeCurrency,
+      //   priceInUsd: scanResult.priceInUsd
+      // };
+      const newItems = scanResult.items.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        priceInNativeCurrency: item.price,
+        nativeCurrency: item.currency,
+        priceInUsd: item.price_usd
+      }));
 
       setFormData(prev => ({
         ...prev,
-        items: [newItem]  // Replace existing items with new item
+        items: newItems  // Replace existing items with new item
       }));
 
     } catch (error) {
@@ -133,17 +186,17 @@ export default function CreatePage() {
     <div className="pages">
       <div className="header">
         <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
-        <button 
+        <button
           className="nav-button"
           onClick={() => navigate('/')}
         >
           Back
         </button>
       </div>
-      
+
       <div className="create-content">
         <h1>Create New Item</h1>
-        
+
         <form onSubmit={handleSubmit} className="create-form">
           {/* Title Section */}
           <div className="form-section">
@@ -205,95 +258,124 @@ export default function CreatePage() {
             </div>
 
             {formData.items.length > 0 && (
-              <div className="item-inputs">
-                <div className="input-group">
-                  <label htmlFor="item-name">Item Name</label>
-                  <input
-                    id="item-name"
-                    type="text"
-                    value={formData.items[0].name}
-                    onChange={(e) => {
-                      setFormData(prev => ({
-                        ...prev,
-                        items: [{ ...prev.items[0], name: e.target.value }]
-                      }));
-                    }}
-                    placeholder="Item name"
-                    required
-                  />
-                </div>
-                <div className="input-group">
-                  <label htmlFor="item-quantity">Quantity</label>
-                  <input
-                    id="item-quantity"
-                    type="number"
-                    value={formData.items[0].quantity}
-                    onChange={(e) => {
-                      setFormData(prev => ({
-                        ...prev,
-                        items: [{ ...prev.items[0], quantity: parseInt(e.target.value) || 0 }]
-                      }));
-                    }}
-                    placeholder="Quantity"
-                    required
-                  />
-                </div>
-                <div className="input-group">
-                  <label htmlFor="item-native-price">Price in Native Currency</label>
-                  <input
-                    id="item-native-price"
-                    type="number"
-                    step="0.01"
-                    value={formData.items[0].priceInNativeCurrency}
-                    onChange={(e) => {
-                      setFormData(prev => ({
-                        ...prev,
-                        items: [{ ...prev.items[0], priceInNativeCurrency: parseFloat(e.target.value) || 0 }]
-                      }));
-                    }}
-                    placeholder="Price in native currency"
-                    required
-                  />
-                </div>
-                <div className="input-group">
-                  <label htmlFor="item-currency">Native Currency</label>
-                  <input
-                    id="item-currency"
-                    type="text"
-                    value={formData.items[0].nativeCurrency}
-                    onChange={(e) => {
-                      setFormData(prev => ({
-                        ...prev,
-                        items: [{ ...prev.items[0], nativeCurrency: e.target.value }]
-                      }));
-                    }}
-                    placeholder="e.g., USD"
-                    required
-                  />
-                </div>
-                <div className="input-group">
-                  <label htmlFor="item-usd-price">Price in USD</label>
-                  <input
-                    id="item-usd-price"
-                    type="number"
-                    step="0.01"
-                    value={formData.items[0].priceInUsd}
-                    onChange={(e) => {
-                      setFormData(prev => ({
-                        ...prev,
-                        items: [{ ...prev.items[0], priceInUsd: parseFloat(e.target.value) || 0 }]
-                      }));
-                    }}
-                    placeholder="Price in USD"
-                    required
-                  />
-                </div>
+              <div className="items-list">
+                {formData.items.map((item, index) => (
+                  <div key={index} className="item-inputs">
+                    <div className="item-header">
+                      <h3>Item {index + 1}</h3>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData(prev => ({
+                            ...prev,
+                            items: prev.items.filter((_, i) => i !== index)
+                          }));
+                        }}
+                        className="remove-item"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div className="input-group">
+                      <label htmlFor={`item-name-${index}`}>Item Name</label>
+                      <input
+                        id={`item-name-${index}`}
+                        type="text"
+                        value={item.name}
+                        onChange={(e) => {
+                          setFormData(prev => ({
+                            ...prev,
+                            items: prev.items.map((i, idx) =>
+                              idx === index ? { ...i, name: e.target.value } : i
+                            )
+                          }));
+                        }}
+                        placeholder="Item name"
+                        required
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label htmlFor={`item-quantity-${index}`}>Quantity</label>
+                      <input
+                        id={`item-quantity-${index}`}
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) => {
+                          setFormData(prev => ({
+                            ...prev,
+                            items: prev.items.map((i, idx) =>
+                              idx === index ? { ...i, quantity: parseInt(e.target.value) || 0 } : i
+                            )
+                          }));
+                        }}
+                        placeholder="Quantity"
+                        required
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label htmlFor={`item-native-price-${index}`}>Price in Native Currency</label>
+                      <input
+                        id={`item-native-price-${index}`}
+                        type="number"
+                        step="0.01"
+                        value={item.priceInNativeCurrency}
+                        onChange={(e) => {
+                          setFormData(prev => ({
+                            ...prev,
+                            items: prev.items.map((i, idx) =>
+                              idx === index ? { ...i, priceInNativeCurrency: parseFloat(e.target.value) || 0 } : i
+                            )
+                          }));
+                        }}
+                        placeholder="Price in native currency"
+                        required
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label htmlFor={`item-currency-${index}`}>Native Currency</label>
+                      <input
+                        id={`item-currency-${index}`}
+                        type="text"
+                        value={item.nativeCurrency}
+                        onChange={(e) => {
+                          setFormData(prev => ({
+                            ...prev,
+                            items: prev.items.map((i, idx) =>
+                              idx === index ? { ...i, nativeCurrency: e.target.value } : i
+                            )
+                          }));
+                        }}
+                        placeholder="e.g., USD"
+                        required
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label htmlFor={`item-usd-price-${index}`}>Price in USD</label>
+                      <input
+                        id={`item-usd-price-${index}`}
+                        type="number"
+                        step="0.01"
+                        value={item.priceInUsd}
+                        onChange={(e) => {
+                          setFormData(prev => ({
+                            ...prev,
+                            items: prev.items.map((i, idx) =>
+                              idx === index ? { ...i, priceInUsd: parseFloat(e.target.value) || 0 } : i
+                            )
+                          }));
+                        }}
+                        placeholder="Price in USD"
+                        required
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="submit-button"
             disabled={formData.items.length === 0}
           >
