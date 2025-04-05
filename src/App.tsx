@@ -15,6 +15,7 @@ import Item from './components/Item/Item'
 import JoinPage from './pages/JoinPage'
 import ItemRequest from './components/ItemRequest/ItemRequest'
 import CctpPage from './pages/CctpPage'
+import PayPage from './pages/PayPage'
 
 const queryClient = new QueryClient()
 
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="/result/:id/:chainid" element={<ResultPage />} />
             <Route path="/join/:groupId/:chainId" element={<JoinPage />} />
             <Route path="/cctp" element={<CctpPage />} />
+            <Route path="/pay" element={<PayPage />} />
           </Routes>
         </Router>
       </QueryClientProvider>
