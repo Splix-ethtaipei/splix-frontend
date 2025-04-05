@@ -24,7 +24,7 @@ interface ResultData {
 const mockResultData: ResultData = {
   id: 1,
   name: "Queenie's Foodie Group",
-  owner: "0xfA6cF974baf5F5589afF6364180D54fd0b2428F2",
+  owner: "bcd",
   items: [
     {
       id: 1,
@@ -284,15 +284,13 @@ export default function ResultPage() {
       <div className="result-content">
         <div className="result-details">
           <div className="ownership-status">
+            {/* <span className="owner-badge">You are the owner</span> */}
             {isOwner && (
               <button
-                className="nav-button"
+                className="generate-qr-button"
                 onClick={generateInviteLink}
                 disabled={isGenerating}
               >
-                <svg className="qr-icon" viewBox="0 0 24 24" width="24" height="24">
-                  <path fill="currentColor" d="M3 3h8v8H3V3m2 2v4h4V5H5m8-2h8v8h-8V3m2 2v4h4V5h-4M3 13h8v8H3v-8m2 2v4h4v-4H5m13-2h3v2h-3v-2m0 4h3v2h-3v-2m-5-4h3v2h-3v-2m0 4h3v2h-3v-2m2 4h3v2h-3v-2m-2-2h3v2h-3v-2"/>
-                </svg>
                 {isGenerating ? 'Generating...' : 'Generate Invite QR'}
               </button>
             )}
