@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppKitAccount } from '@reown/appkit/react';
 import './CreatePage.css';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import ReceiptStorageAbi from '../abi/ReceiptStorageAbi.json';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
@@ -63,11 +63,28 @@ export default function CreatePage() {
   // Handle approve USDC
   const handleCreateGroup = async () => {
     try {
+      console.log("address", import.meta.env.VITE_CONTRACT_ADDRESS);
+      console.log(`${[formData.title, formData.items.map(item => { item.name }), formData.items.map(item => { item.priceInUsd })]}`);
+      console.log(formData.items.map(item => item.priceInUsd));
+      console.table(formData);
+      const usdcPrices = formData.items.map(item => 
+        Math.round(item.priceInUsd * 100000000) // Convert to USDC with 8 decimal places
+      );
+      console.log('Creating group with data:', {
+        groupName: formData.title,
+        items: formData.items.map(item => item.name),
+        prices: usdcPrices
+      });
+      
       createGroup({
         address: import.meta.env.VITE_CONTRACT_ADDRESS,
         abi: ReceiptStorageAbi,
         functionName: 'createGroup',
-        args: [formData.title, formData.items.map(item => { item.name }), formData.items.map(item => { item.priceInUsd })]
+        args: [{
+          groupName: formData.title,
+          items: formData.items.map(item => item.name),
+          prices: usdcPrices
+        }]
       })
     } catch (err) {
       console.error('Error creating group:', err)
@@ -120,6 +137,7 @@ export default function CreatePage() {
         // await tx.wait();
         // console.log('Transaction successful:', tx.hash);
 
+        console.log('Creating group...');
         await handleCreateGroup();
       } catch (contractError) {
         console.error('Contract interaction failed:', contractError);
@@ -182,19 +200,51 @@ export default function CreatePage() {
       // Make API call to scan endpoint
       const url = `${baseUrl}/scan-receipt`;
       console.log(url);
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ image: base64Data }),
-      });
+      
+      // Comment out actual API call
+      // const response = await fetch(url, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({ image: base64Data }),
+      // });
 
-      if (!response.ok) {
-        throw new Error('Failed to scan item');
-      }
+      // if (!response.ok) {
+      //   throw new Error('Failed to scan item');
+      // }
 
-      const scanResult: ScanResult = await response.json();
+      // Mock response
+      const scanResult: ScanResult = {
+        restaurant_name: "Sample Restaurant",
+        location: "123 Main St",
+        phone_number: "555-0123",
+        date: "2024-03-20",
+        time: "19:30",
+        items: [
+          {
+            name: "Burger",
+            quantity: 1,
+            price: 15.99,
+            currency: "USD",
+            price_usd: 15.99
+          },
+          {
+            name: "Fries",
+            quantity: 1,
+            price: 4.99,
+            currency: "USD",
+            price_usd: 4.99
+          }
+        ],
+        tax: 2.10,
+        total: 23.08,
+        currency: "USD",
+        total_usd: 23.08,
+        currency_usd: "USD"
+      };
+
+      // const scanResult: ScanResult = await response.json();
 
       // Convert the response to our item format
       // const newItem = {
@@ -333,7 +383,6 @@ export default function CreatePage() {
                           }));
                         }}
                         placeholder="Item name"
-                        required
                       />
                     </div>
                     <div className="input-group">
@@ -351,7 +400,6 @@ export default function CreatePage() {
                           }));
                         }}
                         placeholder="Quantity"
-                        required
                       />
                     </div>
                     <div className="input-group">
@@ -370,7 +418,6 @@ export default function CreatePage() {
                           }));
                         }}
                         placeholder="Price in native currency"
-                        required
                       />
                     </div>
                     <div className="input-group">
@@ -388,7 +435,6 @@ export default function CreatePage() {
                           }));
                         }}
                         placeholder="e.g., USD"
-                        required
                       />
                     </div>
                     <div className="input-group">
@@ -407,7 +453,6 @@ export default function CreatePage() {
                           }));
                         }}
                         placeholder="Price in USD"
-                        required
                       />
                     </div>
                   </div>
