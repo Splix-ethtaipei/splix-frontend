@@ -1,0 +1,270 @@
+.cctp-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.cctp-container {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.role-selector {
+  display: flex;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.role-button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #e9ecef;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.role-button.active {
+  background-color: #000;
+  color: white;
+}
+
+.sender-form, .receiver-form {
+  padding: 20px 0;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.info-box {
+  background-color: #e9ecef;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.warning {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #000;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.button-group button:hover:not(:disabled) {
+  background-color: #333;
+}
+
+.button-group button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.button-group button.completed {
+  background-color: #28a745;
+}
+
+.logs-container {
+  margin-top: 30px;
+}
+
+.logs {
+  background-color: #343a40;
+  color: #f8f9fa;
+  border-radius: 5px;
+  padding: 15px;
+  height: 200px;
+  overflow-y: auto;
+  font-family: monospace;
+}
+
+.log-entry {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.empty-log {
+  color: #adb5bd;
+  text-align: center;
+  margin-top: 80px;
+}
+
+.connect-wallet {
+  text-align: center;
+  padding: 50px;
+}
+
+.connect-wallet p {
+  margin-bottom: 30px;
+  font-size: 1.2rem;
+}
+
+/* New styles for CCTP transaction UI */
+.status-container {
+  margin-bottom: 25px;
+  padding: 15px;
+  background-color: #e9ecef;
+  border-radius: 8px;
+}
+
+.status-container h3 {
+  text-transform: capitalize;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.action-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.action-button {
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-button:hover:not(:disabled) {
+  background-color: #333;
+}
+
+.action-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.reset-button {
+  background-color: #28a745;
+}
+
+.reset-button:hover {
+  background-color: #218838;
+}
+
+.info {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.error {
+  color: #dc3545;
+  padding: 10px;
+  background-color: #f8d7da;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.waiting-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #e9ecef;
+  border-radius: 8px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-left-color: #000;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.complete-container {
+  text-align: center;
+  padding: 20px;
+  background-color: #d4edda;
+  border-radius: 8px;
+}
+
+.complete-container h3 {
+  margin-top: 0;
+  color: #28a745;
+  margin-bottom: 20px;
+}
+
+.connect-prompt {
+  text-align: center;
+  padding: 40px;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
