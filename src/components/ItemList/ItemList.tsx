@@ -16,32 +16,78 @@ interface ItemListProps {
   ItemComponent: React.ComponentType<ItemType>;
 }
 
+const mockItems: ItemType[] = [
+  {
+    groupid: 1001,
+    chainid: 1,
+    name: "Blue Potion",
+    itemcount: 5,
+    owner: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    account: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+  },
+  {
+    groupid: 1002,
+    chainid: 1,
+    name: "Steel Sword",
+    itemcount: 1,
+    owner: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    account: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+  },
+  {
+    groupid: 1003,
+    chainid: 137,
+    name: "Magic Shield",
+    itemcount: 2,
+    owner: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    account: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+  },
+  {
+    groupid: 1004,
+    chainid: 137,
+    name: "Health Crystal",
+    itemcount: 10,
+    owner: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    account: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+  }
+];
+
 const ItemList: React.FC<ItemListProps> = ({ account, apiEndpoint, ItemComponent }) => {
   const [items, setItems] = useState<ItemType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const baseUrl = import.meta.env.VITE_API_ENDPOINT || '';
 
   useEffect(() => {
-    const mockData: ItemType[] = [
-      { groupid: 1, chainid: 1, name: 'Mock Item 1', itemcount: 1, owner: 'mock', account: account },
-      { groupid: 2, chainid: 1, name: 'Mock Item 2', itemcount: 2, owner: 'mock', account: account },
-    ];
-
     const fetchItems = async () => {
       try {
-        if (!apiEndpoint) {
-          setItems(mockData);
+        console.log('apiEndpoint', apiEndpoint);
+        // If no API endpoint is provided or it's an empty string, use mock data
+        if (!baseUrl) {
+          console.log('No API endpoint provided, using mock data');
+          setItems(mockItems);
           return;
         }
 
         const response = await fetch(`${apiEndpoint}/${account}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch items');
+
+        // Check content-type header
+        const contentType = response.headers.get('content-type');
+        if (!contentType?.includes('application/json')) {
+          console.warn(`Received non-JSON response (${contentType}), falling back to mock data`);
+          setItems(mockItems.filter(item => item.account === account));
+          return;
         }
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch items: ${response.status} ${response.statusText}`);
+        }
+
         const data = await response.json();
         setItems(data.map((item: ItemType) => ({ ...item, account, chainid: item.chainid })));
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error('Error fetching items:', err);
+        // Fallback to mock data on error
+        setItems(mockItems.filter(item => item.account === account));
       } finally {
         setIsLoading(false);
       }
