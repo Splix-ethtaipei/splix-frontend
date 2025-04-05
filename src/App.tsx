@@ -4,8 +4,6 @@ import { WagmiProvider } from 'wagmi'
 import { useState } from 'react'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ActionButtonList } from './components/ActionButtonList'
-import { SmartContractActionButtonList } from './components/SmartContractActionButtonList'
 import { projectId, metadata, networks, wagmiAdapter } from './config'
 
 import "./App.css"
@@ -66,61 +64,71 @@ function AppContent() {
   return (
     <div className={"pages"}>
       <div className="header">
-        <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
-        {isConnected && (
-          <div className="nav-buttons">
-            <button
-              className="nav-button"
-              onClick={() => navigate('/create')}
-            >
-              Create
-            </button>
-            <button
-              className="nav-button"
-              onClick={() => navigate('/cctp')}
-            >
-              CCTP Demo
-            </button>
-          </div>
-        )}
-      </div>
-      <h1>AppKit Wagmi React dApp Example</h1>
-      <appkit-button />
-      <ActionButtonList 
-        sendHash={() => {}} 
-        sendSignMsg={() => {}} 
-        sendBalance={() => {}} 
-      />
-      <SmartContractActionButtonList />
-      <div className="advice">
-        <p>
-          This projectId only works on localhost. <br />
-          Go to <a href="https://cloud.reown.com" target="_blank" className="link-button" rel="Reown Cloud">Reown Cloud</a> to get your own.
-        </p>
+        <img 
+          src="/splix-logo.jpg" 
+          alt="SpliX" 
+          className="splix-logo"
+          onError={(e) => {
+            e.currentTarget.src = '../src/assets/splix-logo.svg';
+          }}
+        />
+        <div className="header-right">
+          <appkit-button />
+          {isConnected && (
+            <div className="nav-buttons">
+              <button
+                className="nav-button"
+                onClick={() => navigate('/create')}
+              >
+                Create
+              </button>
+              <button
+                className="nav-button"
+                onClick={() => navigate('/cctp')}
+              >
+                CCTP Demo
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       {isConnected && address && (
-        <div>
-          <div className="tab-buttons">
-            <button
-              onClick={() => setActiveTab('tab1')}
-              className={`tab-button ${activeTab === 'tab1' ? 'active' : ''}`}
-            >
-              Joined
-            </button>
-            <button
-              onClick={() => setActiveTab('tab2')}
-              className={`tab-button ${activeTab === 'tab2' ? 'active' : ''}`}
-            >
-              Request
-            </button>
-          </div>
+        <div className="main-content">
+          <div className="tab-container">
+            <div className="tab-buttons">
+              <button
+                onClick={() => setActiveTab('tab1')}
+                className={`tab-button ${activeTab === 'tab1' ? 'active' : ''}`}
+              >
+                <span className="tab-icon">👥</span>
+                My Groups
+              </button>
+              <button
+                onClick={() => setActiveTab('tab2')}
+                className={`tab-button ${activeTab === 'tab2' ? 'active' : ''}`}
+              >
+                <span className="tab-icon">📨</span>
+                Pending Invites
+              </button>
+            </div>
 
-          {activeTab === 'tab1' && (
-            <ItemList account={address} apiEndpoint={`${baseUrl}/groups/joined`} ItemComponent={Item} />
-          )}
-          {activeTab === 'tab2' && (
-            <ItemList account={address} apiEndpoint={`${baseUrl}/groups/request`} ItemComponent={ItemRequest} />
-          )}
+            <div className="tab-content">
+              {activeTab === 'tab1' && (
+                <div className="column">
+                  <div className="column-content">
+                    <h2 className="column-title">Payment Groups You've Joined</h2>
+                    <ItemList account={address} apiEndpoint={`${baseUrl}/groups/joined`} ItemComponent={Item} />
+                  </div>
+                </div>
+              )}
+              {activeTab === 'tab2' && (
+                <div className="list-container">
+                  <h2>Group Invitations</h2>
+                  <ItemList account={address} apiEndpoint={`${baseUrl}/groups/request`} ItemComponent={ItemRequest} />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

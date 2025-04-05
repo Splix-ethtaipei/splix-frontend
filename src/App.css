@@ -106,12 +106,6 @@ pre {
   color: black;  /* Change text color to black on hover */
 }
 
-.advice {
-  text-align: 'center';
-   margin-bottom: 10px;
-   line-height: 25px;
-}
-
 .tab-buttons {
   margin: 20px 0;
 }
@@ -143,20 +137,149 @@ pre {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 20px;
+  padding: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .nav-button {
-  padding: 10px 20px;
-  background-color: #000000;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: white;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  height: 32px;  /* Explicitly set height to match logo */
+  display: flex;
+  align-items: center;
 }
 
 .nav-button:hover {
-  background-color: #333333;
+  background: #f5f5f5;
+}
+
+.splix-logo {
+  height: 128px;  /* Doubled from 64px to 128px */
+  width: auto;
+  display: block;
+}
+
+.main-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.columns-container {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.column {
+  flex: 1;
+  min-width: 0; /* Prevents flex items from overflowing */
+}
+
+.column-content {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  height: 100%;
+}
+
+.column h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #333;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .columns-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .main-content {
+    padding: 1rem;
+  }
+  
+  .column-content {
+    padding: 1rem;
+  }
+}
+
+/* List item hover effects */
+.item-list > div {
+  transition: all 0.2s ease;
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  cursor: pointer;
+  background: white;
+}
+
+.item-list > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #ddd;
+}
+
+.group-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 0.5rem;
+}
+
+.group-details {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.group-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Add subtle active state */
+.item-list > div:active {
+  transform: translateY(0);
+  background-color: #f8f8f8;
+}
+
+/* Empty state styling */
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #666;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.column-title {
+  font-size: 0.75rem !important;  /* Half of the original 1.5rem */
+  color: #666;  /* Slightly muted color */
+  font-weight: 400 !important;  /* Making it lighter */
+  margin-bottom: 1rem !important;
+  padding-bottom: 0.5rem !important;
 }
