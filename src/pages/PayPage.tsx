@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './PayPage.css';
 
@@ -8,12 +9,12 @@ import './PayPage.css';
 const AVALANCHE_FUJI_USDC = '0x5425890298aed601595a70AB815c96711a31Bc65'
 const AVALANCHE_FUJI_TOKEN_MESSENGER = '0x8fe6b999dc680ccfdd5bf7eb0974218be2542daa'
 
-// Hardcoded data for relay transaction
+// Default relay transaction data structure
 let relay_tx_data = {
-  txHash: "0x26657f019eb37bdb2e999d3886a535c00ff2d5ea8e588c5f3afc3774f903e53d",
+  txHash: "",
   groupId: 0,
-  itemIds: [0, 1, 2, 3],
-  amount: 720000
+  itemIds: [] as number[],
+  amount: 0
 };
 
 // ABI definitions
@@ -60,6 +61,9 @@ const tokenMessengerABI = [
 
 const PayPage = () => {
   const { isConnected } = useAppKitAccount();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [groupName, setGroupName] = useState<string>('');
   const [txStep, setTxStep] = useState<
     'idle' | 'approving' | 'burning' | 'processing' | 'complete'
   >('idle');
@@ -220,7 +224,22 @@ const PayPage = () => {
     setProcessingStep('idle');
     setProgress(0);
     setError(null);
+    navigate('/');
   };
+
+  // Load payment data from location state when component mounts
+  useEffect(() => {
+    if (location.state?.paymentData) {
+      const { groupId, itemIds, amount, groupName } = location.state.paymentData;
+      relay_tx_data = {
+        txHash: "", // Will be set after burn transaction
+        groupId,
+        itemIds,
+        amount
+      };
+      setGroupName(groupName);
+    }
+  }, [location.state]);
 
   return (
     <div className="result-content">
@@ -235,6 +254,7 @@ const PayPage = () => {
           />
       </div>
       <h1>Finalize Your Payment</h1>
+      {groupName && <h2>Group: {groupName}</h2>}
       
       {isConnected ? (
         <div className="result-details">
@@ -287,7 +307,7 @@ const PayPage = () => {
             {txStep === 'complete' && (
               <div className="complete-container">
                 <h3>Payment Successful! 🎉</h3>
-                <p>Your transaction has been successfully processed.</p>
+                <p>Your payment of ${(relay_tx_data.amount / 1000000).toFixed(2)} USDC has been successfully processed.</p>
                 <button 
                   className="submit-changes-button"
                   onClick={resetProcess}

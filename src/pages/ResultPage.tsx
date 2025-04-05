@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { mockGenerateInviteCode } from '../services/inviteService';
@@ -65,7 +65,6 @@ const mockResultData: ResultData = {
 
 export default function ResultPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { id, chainid } = useParams();
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [localData, setLocalData] = useState<ResultData | null>(null);
@@ -75,9 +74,9 @@ export default function ResultPage() {
   const [showQR, setShowQR] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
   const baseUrl = import.meta.env.VITE_API_ENDPOINT || '';
 
@@ -200,20 +199,56 @@ export default function ResultPage() {
   };
 
   const handleSubmitChanges = async () => {
-    if (!id || !localData) return;
+    if (!localData) return;
 
-    setIsSubmitting(true);
     try {
-      await mockUpdateItem({ id, items: localData.items });
+      setError(null);
+
+      // Call API to update group data
+      await mockUpdateItem(localData.id, localData);
       setResultData(localData);
+
+      console.log('Changes submitted successfully!');
     } catch (error) {
-      console.error('Error updating items:', error);
-      setLocalData(resultData); // Reset local data to previous state
-      // Optionally show error to user
-      setError('Failed to update items');
-    } finally {
-      setIsSubmitting(false);
+      console.error('Error submitting changes:', error);
+      setError('Failed to submit changes. Please try again.');
     }
+  };
+
+  const handleProceedToPayment = () => {
+    if (selectedItems.length === 0) {
+      setError('Please select at least one item to pay for');
+      return;
+    }
+    
+    // Calculate total price for selected items
+    const totalAmount = selectedItems.reduce((total, itemIndex) => {
+      if (localData?.items[itemIndex]) {
+        return total + localData.items[itemIndex].price;
+      }
+      return total;
+    }, 0);
+    
+    // Create the payload to send to PayPage
+    const paymentData = {
+      groupId: localData?.id || 0,
+      itemIds: selectedItems,
+      amount: totalAmount,
+      groupName: localData?.name || ''
+    };
+    
+    // Navigate to payment page with data
+    navigate(`/pay`, { state: { paymentData } });
+  };
+
+  const toggleItemSelection = (index: number) => {
+    setSelectedItems(prev => {
+      if (prev.includes(index)) {
+        return prev.filter(i => i !== index);
+      } else {
+        return [...prev, index];
+      }
+    });
   };
 
   if (isLoading) {
@@ -385,14 +420,14 @@ export default function ResultPage() {
                   ) : (
                     <div className="item-display">
                       <div className="item-info">
-                        <input
-                          type="checkbox"
-                          checked={item.haspaid}
-                          onChange={(e) => handleEditItem(index, 'haspaid', e.target.checked)}
-                          className="item-checkbox"
-                          disabled={resultData?.items[index].haspaid}
-                        />
                         <span className={resultData?.items[index].haspaid ? 'paid-item' : ''}>
+                          <input
+                            type="checkbox"
+                            className="item-select-checkbox"
+                            checked={selectedItems.includes(index)}
+                            onChange={() => toggleItemSelection(index)}
+                            disabled={resultData?.items[index].haspaid}
+                          />
                           <strong>{item.name}</strong> - ${(item.price / 1000000).toFixed(2)}
                           {resultData?.items[index].haspaid && (
                             <span className="payer-info">
@@ -415,13 +450,13 @@ export default function ResultPage() {
               ))}
             </ul>
 
-            <div className="changes-actions">
+            <div className="payment-actions">
               <button
-                onClick={handleSubmitChanges}
-                className="submit-changes-button"
-                disabled={isSubmitting}
+                className="payment-button"
+                onClick={handleProceedToPayment}
+                disabled={selectedItems.length === 0}
               >
-                {isSubmitting ? 'Submitting...' : 'Submit'}
+                Pay Selected Items
               </button>
             </div>
           </div>
