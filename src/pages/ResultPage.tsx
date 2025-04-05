@@ -40,7 +40,7 @@ const mockResultData: ResultData = {
 export default function ResultPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { id, chainId } = useParams();
+  const { id, chainid } = useParams();
   const [resultData, setResultData] = useState<ResultData | null>(null);
   const [localData, setLocalData] = useState<ResultData | null>(null);
   const { address } = useAppKitAccount();
@@ -65,7 +65,7 @@ export default function ResultPage() {
       try {
         setIsLoading(true);
         // Comment out the API call
-        const response = await fetch(`${baseUrl}/groups/${id}/${chainId}`);
+        const response = await fetch(`${baseUrl}/groups/${id}/${chainid}`);
         if (!response.ok) {
           throw new Error('Failed to fetch result');
         }

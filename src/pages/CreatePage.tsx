@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppKitAccount } from '@reown/appkit/react';
 import './CreatePage.css';
+import { ethers } from 'ethers';
+import ReceiptStorageAbi from '../abi/ReceiptStorageAbi.json';
+import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 interface Item {
   name: string;
@@ -50,6 +53,26 @@ export default function CreatePage() {
   });
   const [isScanning, setIsScanning] = useState(false);
   const baseUrl = import.meta.env.VITE_API_ENDPOINT;
+
+  // ============ Create Group ============
+  const { writeContract: createGroup, data: createGroupTxHash } = useWriteContract()
+  const { isLoading: isCreateGroupLoading, isSuccess: isCreateGroupSuccess } = useWaitForTransactionReceipt({
+    hash: createGroupTxHash,
+  })
+
+  // Handle approve USDC
+  const handleCreateGroup = async () => {
+    try {
+      createGroup({
+        address: import.meta.env.VITE_CONTRACT_ADDRESS,
+        abi: ReceiptStorageAbi,
+        functionName: 'createGroup',
+        args: [formData.title, formData.items.map(item => { item.name }), formData.items.map(item => { item.priceInUsd })]
+      })
+    } catch (err) {
+      console.error('Error creating group:', err)
+    }
+  }
   // Redirect to home if not connected
   React.useEffect(() => {
     if (!isConnected) {
@@ -61,28 +84,47 @@ export default function CreatePage() {
     e.preventDefault();
 
     try {
-      // // Make API call to create endpoint
-      // const response = await fetch('/api/create', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
-
-      // if (!response.ok) {
-      //   throw new Error('Failed to create item');
-      // }
-
-      // const result = await response.json();
-
       // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const mockResult = {
-        id: '123',
-        ...formData,
-        createdAt: new Date().toISOString()
-      };
+      // await new Promise(resolve => setTimeout(resolve, 1000));
+      // const mockResult = {
+      //   id: '123',
+      //   ...formData,
+      //   createdAt: new Date().toISOString()
+      // };
+
+      // Add smart contract interaction
+      try {
+        // Assuming you have your contract instance set up
+        // const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+        // const contract = new ethers.Contract(contractAddress, ReceiptStorageAbi);
+
+        // const tx = await contract.populateTransaction.createGroup(formData.title, formData.items.map(item => { item.name }, formData.items.map(item => { item.quantity, item.priceInNativeCurrency, item.nativeCurrency, item.priceInUsd })))
+
+        // // Calculate total USD value of all items
+        // const totalUsdValue = formData.items.reduce((sum, item) => sum + item.priceInUsd, 0);
+
+        // // Create transaction
+        // // const tx = await contract.createItem(
+        // //   formData.title,
+        // //   formData.members,
+        // //   formData.items.map(item => ({
+        // //     name: item.name,
+        // //     quantity: item.quantity,
+        // //     priceInNativeCurrency: ethers.utils.parseUnits(item.priceInNativeCurrency.toString(), 18),
+        // //     nativeCurrency: item.nativeCurrency,
+        // //     priceInUsd: ethers.utils.parseUnits(item.priceInUsd.toString(), 18)
+        // //   }))
+        // // );
+
+        // // Wait for transaction to be mined
+        // await tx.wait();
+        // console.log('Transaction successful:', tx.hash);
+
+        await handleCreateGroup();
+      } catch (contractError) {
+        console.error('Contract interaction failed:', contractError);
+        throw contractError;
+      }
 
       // Navigate to main page
       navigate('/');
