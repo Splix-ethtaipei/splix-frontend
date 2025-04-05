@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatAddress } from '../../utils/formatters';
 import './ItemRequest.css';
 
 interface ItemRequestProps {
@@ -63,7 +64,7 @@ const ItemRequest: React.FC<ItemRequestProps> = ({ groupid, name, owner, itemcou
     <li className="request-item">
       <div className="request-info">
         <h3 className="request-title">{name}</h3>
-        <p className="request-creator">Created by: {owner}</p>
+        <p className="request-creator">Created by: {formatAddress(owner)}</p>
         <p className="request-count">Items: {itemcount}</p>
       </div>
       <div className="request-actions">

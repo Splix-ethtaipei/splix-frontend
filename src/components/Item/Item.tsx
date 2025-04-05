@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatAddress } from '../../utils/formatters';
 import './Item.css';
 
 interface ItemProps {
@@ -8,10 +9,10 @@ interface ItemProps {
   name: string;
   itemcount: number;
   owner: string;
-  account: string;
+  account?: string; // Made optional since it's not used in this component
 }
 
-const Item: React.FC<ItemProps> = ({ groupid, name, itemcount, owner, account, chainid }) => {
+const Item: React.FC<ItemProps> = ({ groupid, name, itemcount, owner, chainid }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -23,7 +24,7 @@ const Item: React.FC<ItemProps> = ({ groupid, name, itemcount, owner, account, c
       <div className="group-title">{name}</div>
       <div className="group-details">
         <div>Items: {itemcount}</div>
-        <div>Created by: {owner}</div>
+        <div>Created by: {formatAddress(owner)}</div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { formatAddress } from '../utils/formatters';
 import { useAppKitAccount } from '@reown/appkit/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { mockGenerateInviteCode } from '../services/inviteService';
@@ -205,7 +206,7 @@ export default function ResultPage() {
       setError(null);
 
       // Call API to update group data
-      await mockUpdateItem(localData.id, localData);
+      await mockUpdateItem({ id: String(localData.id), items: localData.items });
       setResultData(localData);
 
       console.log('Changes submitted successfully!');
@@ -358,7 +359,7 @@ export default function ResultPage() {
                           <span className="member-avatar">{emoji}</span>
                           <span className="member-name">{member.name}</span>
                         </div>
-                        <span className="member-address">{member.address}</span>
+                        <span className="member-address">{formatAddress(member.address)}</span>
                       </div>
                       {isOwner && (
                         <button
@@ -431,7 +432,7 @@ export default function ResultPage() {
                           <strong>{item.name}</strong> - ${(item.price / 1000000).toFixed(2)}
                           {resultData?.items[index].haspaid && (
                             <span className="payer-info">
-                              {' '}(Paid by {item.payer})
+                              {' '}(Paid by {formatAddress(item.payer)})
                             </span>
                           )}
                         </span>
