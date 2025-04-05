@@ -91,12 +91,12 @@ export default function ResultPage() {
   }, [id]);
 
   const generateInviteLink = async () => {
-    if (!id || !chainId) return;
+    if (!id || !chainid) return;
     
     setIsGenerating(true);
     try {
       // Simplified link generation without invite code
-      const link = `${window.location.origin}/join/${id}/${chainId}`;
+      const link = `${window.location.origin}/join/${id}/${chainid}`;
       setInviteLink(link);
       setShowQR(true);
     } catch (error) {

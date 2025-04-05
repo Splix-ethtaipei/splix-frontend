@@ -48,7 +48,7 @@ export default function App() {
             <Route path="/" element={<AppContent />} />
             <Route path="/create" element={<CreatePage />} />
             <Route path="/result/:id/:chainid" element={<ResultPage />} />
-            <Route path="/join/:groupId/:chainid" element={<JoinPage />} />
+            <Route path="/join/:groupId/:chainId" element={<JoinPage />} />
             <Route path="/cctp" element={<CctpPage />} />
           </Routes>
         </Router>

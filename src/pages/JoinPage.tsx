@@ -69,7 +69,7 @@ export default function JoinPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ groupId, user: address, chainId }),
+        body: JSON.stringify({ groupId, user: address, chainId: Number(chainId) }),
       });
 
       if (!response.ok) {
@@ -78,7 +78,7 @@ export default function JoinPage() {
 
       const result = await response.json();
       if (result.success) {
-        navigate(`/result/${groupId}`);
+        navigate(`/result/${groupId}/${chainId}`);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to join group');
