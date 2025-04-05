@@ -32,6 +32,20 @@ const mockResultData: ResultData = {
       price: 1234,
       haspaid: true,
       payer: "0xabc"
+    },
+    {
+      id: 2,
+      name: "food b",
+      price: 1234,
+      haspaid: false,
+      payer: "0xabc"
+    },
+    {
+      id: 3,
+      name: "food d",
+      price: 1234,
+      haspaid: false,
+      payer: "0xabc"
     }
   ],
   members: ["0xfA6cF974baf5F5589afF6364180D54fd0b2428F2"]
@@ -54,31 +68,32 @@ export default function ResultPage() {
   const [error, setError] = useState<string | null>(null);
 
   const baseUrl = import.meta.env.VITE_API_ENDPOINT || '';
-  
+
   // Replace hardcoded isOwner with comparison
   const isOwner = resultData?.owner?.toLowerCase() === address?.toLowerCase();
 
   useEffect(() => {
     const fetchData = async () => {
       if (!id) return;
-      
+
       try {
         setIsLoading(true);
-        // Comment out the API call
-        const response = await fetch(`${baseUrl}/groups/${id}/${chainid}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch result');
-        }
-        const data = await response.json();
-        setResultData(data);
-        setLocalData(data);
 
-        // // Simulate API delay
-        // await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // // Use mock data instead
-        // setResultData(mockResultData);
-        // setLocalData(mockResultData);
+        if (baseUrl) {
+          // Use real API when baseUrl is available
+          const response = await fetch(`${baseUrl}/groups/${id}/${chainid}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch result');
+          }
+          const data = await response.json();
+          setResultData(data);
+          setLocalData(data);
+        } else {
+          // Use mock data when baseUrl is empty
+          await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
+          setResultData(mockResultData);
+          setLocalData(mockResultData);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
         console.error('Error fetching result:', err);
@@ -88,11 +103,11 @@ export default function ResultPage() {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, chainid, baseUrl]);
 
   const generateInviteLink = async () => {
     if (!id || !chainid) return;
-    
+
     setIsGenerating(true);
     try {
       // Simplified link generation without invite code
@@ -114,7 +129,7 @@ export default function ResultPage() {
   const handleAddMember = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && newMember.trim()) {
       e.preventDefault();
-      
+
       if (!resultData) {
         setError('No result data available');
         return;
@@ -124,7 +139,7 @@ export default function ResultPage() {
       if (!resultData.members.includes(trimmedMember)) {
         // // Actual API call would go here
         // await updateMembers([...resultData.members, trimmedMember]);
-        
+
         setResultData(prev => {
           if (!prev) return null;
           return {
@@ -139,7 +154,7 @@ export default function ResultPage() {
 
   const handleRemoveMember = (memberToRemove: string) => {
     if (!resultData) return;
-    
+
     const updatedMembers = resultData.members.filter(member => member !== memberToRemove);
     setResultData(prev => {
       if (!prev) return null;
@@ -159,8 +174,8 @@ export default function ResultPage() {
 
   const handleEditItem = (index: number, field: 'name' | 'price' | 'haspaid' | 'payer', value: string | boolean | number) => {
     if (!localData) return;
-    
-    const updatedItems = localData.items.map((item, i) => 
+
+    const updatedItems = localData.items.map((item, i) =>
       i === index ? { ...item, [field]: value } : item
     );
     setLocalData(prev => {
@@ -174,7 +189,7 @@ export default function ResultPage() {
 
   const handleSubmitChanges = async () => {
     if (!id || !localData) return;
-    
+
     setIsSubmitting(true);
     try {
       await mockUpdateItem({ id, items: localData.items });
@@ -210,7 +225,7 @@ export default function ResultPage() {
         </div>
         <div className="result-content">
           <h1>{error || 'Item Not Found'}</h1>
-          <button 
+          <button
             className="nav-button"
             onClick={() => navigate('/')}
           >
@@ -225,22 +240,22 @@ export default function ResultPage() {
     <div className="pages">
       <div className="header">
         <img src="/reown.svg" alt="Reown" style={{ width: '150px', height: '150px' }} />
-        <button 
+        <button
           className="nav-button"
           onClick={() => navigate('/')}
         >
           Back to Home
         </button>
       </div>
-      
+
       <div className="result-content">
         <h1>Item Details</h1>
-        
+
         <div className="result-details">
           <div className="ownership-status">
             {/* <span className="owner-badge">You are the owner</span> */}
             {isOwner && (
-              <button 
+              <button
                 className="generate-qr-button"
                 onClick={generateInviteLink}
                 disabled={isGenerating}
@@ -251,7 +266,7 @@ export default function ResultPage() {
           </div>
 
           <h2>{resultData.name}</h2>
-          
+
           <div className="result-section">
             <h3>Members:</h3>
             {isOwner && (
@@ -343,7 +358,7 @@ export default function ResultPage() {
             </ul>
 
             <div className="changes-actions">
-              <button 
+              <button
                 onClick={handleSubmitChanges}
                 className="submit-changes-button"
                 disabled={isSubmitting}
@@ -365,10 +380,10 @@ export default function ResultPage() {
               <QRCodeSVG value={inviteLink} size={200} />
             </div>
             <div className="invite-link">
-              <input 
-                type="text" 
-                value={inviteLink} 
-                readOnly 
+              <input
+                type="text"
+                value={inviteLink}
+                readOnly
                 className="link-input"
               />
               <button
