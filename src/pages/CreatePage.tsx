@@ -68,7 +68,7 @@ export default function CreatePage() {
       console.log(formData.items.map(item => item.priceInUsd));
       console.table(formData);
       const usdcPrices = formData.items.map(item => 
-        Math.round(item.priceInUsd * 100000000) // Convert to USDC with 8 decimal places
+        Math.round(item.priceInUsd * 1000000) // Convert to USDC with 8 decimal places
       );
       console.log('Creating group with data:', {
         groupName: formData.title,
