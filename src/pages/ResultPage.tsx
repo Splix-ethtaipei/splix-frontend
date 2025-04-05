@@ -357,9 +357,10 @@ export default function ResultPage() {
                       />
                       <input
                         type="number"
-                        value={item.price}
-                        onChange={(e) => handleEditItem(index, 'price', Number(e.target.value))}
+                        value={(item.price / 1000000).toFixed(2)}
+                        onChange={(e) => handleEditItem(index, 'price', Math.round(Number(e.target.value) * 1000000))}
                         placeholder="Price"
+                        step="0.01"
                       />
                       <label>
                         <input
@@ -392,7 +393,7 @@ export default function ResultPage() {
                           disabled={resultData?.items[index].haspaid}
                         />
                         <span className={resultData?.items[index].haspaid ? 'paid-item' : ''}>
-                          <strong>{item.name}</strong> - ${(item.price / 100).toFixed(2)}
+                          <strong>{item.name}</strong> - ${(item.price / 1000000).toFixed(2)}
                           {resultData?.items[index].haspaid && (
                             <span className="payer-info">
                               {' '}(Paid by {item.payer})
